@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Color+Emoji&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Noto Color Emoji", ui-sans-serif, system-ui, sans-serif;
 }
 
 .twemoji, .emoji {
@@ -12,4 +12,8 @@
   height: 1em;
   vertical-align: -0.1em;
   margin: 0;
+}
+
+.emoji-font {
+  font-family: "Noto Color Emoji", sans-serif;
 }

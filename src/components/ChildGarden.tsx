@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, Droplets, Mic, Edit3, X, TreePine, Grid, ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import LiquidGlassBackground from './LiquidGlassBackground';
+import twemoji from 'twemoji';
+
+const TwemojiText = ({ text, className }: { text: string, className?: string }) => {
+  return <span className={className} dangerouslySetInnerHTML={{ __html: twemoji.parse(text, { folder: 'apple/64', ext: '.png', base: 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.0.1/img/' }) }} />;
+};
 
 const MOOD_PLANTS = {
   joy: { id: 'joy', icon: '😄', emoji: '🌹', name: '玫瑰', color: 'text-red-500', message: '感受到了你的快乐', desc: '让快乐继续绽放吧！' },
@@ -255,7 +260,7 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
                         transition={{ duration: 3, type: "tween", ease: "easeOut" }}
                         className="text-7xl z-10 drop-shadow-xl"
                       >
-                        {currentSeed}
+                        <TwemojiText text={currentSeed} />
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -337,7 +342,7 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
                                   setSelectedDiary({ ...diary, date: dayNum });
                                 }}
                               >
-                                {diary.type}
+                                <TwemojiText text={diary.type} />
                               </motion.div>
                             </div>
                           )}
@@ -451,7 +456,7 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
                       onClick={() => setSelectedMood(moodKey)}
                       className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl transition-all ${selectedMood === moodKey ? 'bg-blue-50 scale-110 shadow-sm' : 'grayscale opacity-50 hover:grayscale-0 hover:opacity-100'}`}
                     >
-                      <span className="text-3xl">{mood.icon}</span>
+                      <TwemojiText text={mood.icon} className="text-3xl" />
                       <span className={`text-xs font-bold ${selectedMood === moodKey ? 'text-blue-600' : 'text-gray-500'}`}>{mood.name}</span>
                     </button>
                   );
@@ -513,7 +518,7 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
                 >
                   <X size={16} />
                 </button>
-                <span className="text-5xl mb-4 animate-bounce block text-center">🎁</span>
+                <TwemojiText text="🎁" className="text-5xl mb-4 animate-bounce block text-center" />
                 <h3 className="text-base font-bold text-gray-800 mb-2">魔法盒开启！</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-6">
                   小花仙{MOOD_PLANTS[selectedMood].message}，送你一颗<span className={`font-bold ${MOOD_PLANTS[selectedMood].color}`}>【{MOOD_PLANTS[selectedMood].name}】</span>种子，种下它，{MOOD_PLANTS[selectedMood].desc}

@@ -3,6 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Send, X, Calendar, CalendarDays, Sprout, Heart, Lock, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import LiquidGlassBackground from './LiquidGlassBackground';
+import twemoji from 'twemoji';
+
+const TwemojiText = ({ text, className }: { text: string, className?: string }) => {
+  return <span className={className} dangerouslySetInnerHTML={{ __html: twemoji.parse(text, { folder: 'apple/64', ext: '.png', base: 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@15.0.1/img/' }) }} />;
+};
 
 export default function ParentApp({ diaries: propDiaries, onAction, messages = [], onSendMessage }: { diaries?: any[], onAction?: (type: 'water'|'heart') => void, messages?: any[], onSendMessage?: (text: string, isParent: boolean) => void } = {}) {
   const [inputText, setInputText] = useState('');
@@ -182,7 +187,7 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
                               setRequestSent(false);
                             }}
                           >
-                            {diary.type}
+                            <TwemojiText text={diary.type} />
                           </motion.div>
                         </div>
                       )}
