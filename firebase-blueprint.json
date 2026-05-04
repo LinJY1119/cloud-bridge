@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "DiaryEntry": {
+      "title": "Diary Entry",
+      "description": "A diary entry representing a planted flower/plant in the child's garden.",
+      "type": "object",
+      "properties": {
+        "dateStr": {
+          "type": "string",
+          "description": "The date string in YYYY-MM-DD format."
+        },
+        "type": {
+          "type": "string",
+          "description": "The emoji representing the plant type."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the diary entry."
+        },
+        "createdAt": {
+          "type": "timestamp",
+          "description": "When the entry was created."
+        }
+      },
+      "required": ["dateStr", "type", "content", "createdAt"]
+    },
+    "ParentAction": {
+      "title": "Parent Action",
+      "description": "An action taken by the parent (e.g., watering, leaving a heart).",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["water", "heart"],
+          "description": "The type of action."
+        },
+        "createdAt": {
+          "type": "timestamp",
+          "description": "When the action occurred."
+        }
+      },
+      "required": ["type", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/diaries/{diaryId}": {
+      "schema": { "$ref": "#/entities/DiaryEntry" },
+      "description": "Diary entries for a specific user."
+    },
+    "/users/{userId}/actions/{actionId}": {
+      "schema": { "$ref": "#/entities/ParentAction" },
+      "description": "Parent actions for a specific user."
+    }
+  }
+}

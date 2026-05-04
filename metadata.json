@@ -1,0 +1,8 @@
+{
+  "name": "云桥 APP (Cloud Bridge)",
+  "description": "面向留守儿童的 AI 辅助陪伴与情绪疏导平台 Demo",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}

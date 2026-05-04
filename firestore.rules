@@ -1,0 +1,109 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /users/{userId}/diaries/{diaryId}
+    // Fields:
+    //   - dateStr: string (required, YYYY-MM-DD)
+    //   - type: string (required, emoji)
+    //   - content: string (required)
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: /users/{userId}/actions/{actionId}
+    // Fields:
+    //   - type: string (required, 'water' or 'heart')
+    //   - createdAt: timestamp (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDemo(userId) {
+      return userId == 'demo_garden';
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidDiaryEntry() {
+      return hasOnlyAllowedFields(['dateStr', 'type', 'content', 'createdAt']) &&
+             hasRequiredFields(['dateStr', 'type', 'content', 'createdAt']) &&
+             isValidDateString(request.resource.data.dateStr) &&
+             request.resource.data.type is string && request.resource.data.type.size() > 0 && request.resource.data.type.size() <= 10 &&
+             request.resource.data.content is string && request.resource.data.content.size() <= 1000 &&
+             request.resource.data.createdAt is timestamp;
+    }
+
+    function isValidParentAction() {
+      return hasOnlyAllowedFields(['type', 'createdAt']) &&
+             hasRequiredFields(['type', 'createdAt']) &&
+             request.resource.data.type in ['water', 'heart'] &&
+             request.resource.data.createdAt is timestamp;
+    }
+
+    function isValidMessage() {
+      return hasOnlyAllowedFields(['text', 'isParent', 'time', 'createdAt']) &&
+             hasRequiredFields(['text', 'isParent', 'time', 'createdAt']) &&
+             request.resource.data.text is string && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 1000 &&
+             request.resource.data.isParent is bool &&
+             request.resource.data.time is string && request.resource.data.time.size() <= 10 &&
+             request.resource.data.createdAt is timestamp;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    match /users/{userId} {
+      // Allow reading user doc if owner
+      allow read: if isOwner(userId) || isDemo(userId);
+      // We don't strictly need to create user docs for this app yet, but allow if needed
+      allow write: if isOwner(userId) || isDemo(userId);
+
+      match /diaries/{diaryId} {
+        allow read: if isOwner(userId) || isDemo(userId);
+        allow create: if (isOwner(userId) || isDemo(userId)) && isValidDiaryEntry();
+        allow update: if (isOwner(userId) || isDemo(userId)) && isValidDiaryEntry();
+        allow delete: if isOwner(userId) || isDemo(userId);
+      }
+
+      match /actions/{actionId} {
+        allow read: if isOwner(userId) || isDemo(userId);
+        allow create: if (isOwner(userId) || isDemo(userId)) && isValidParentAction();
+        allow update: if (isOwner(userId) || isDemo(userId)) && isValidParentAction();
+        allow delete: if isOwner(userId) || isDemo(userId);
+      }
+
+      match /messages/{messageId} {
+        allow read: if isOwner(userId) || isDemo(userId);
+        allow create: if (isOwner(userId) || isDemo(userId)) && isValidMessage();
+        allow update: if (isOwner(userId) || isDemo(userId)) && isValidMessage();
+        allow delete: if isOwner(userId) || isDemo(userId);
+      }
+    }
+  }
+}
