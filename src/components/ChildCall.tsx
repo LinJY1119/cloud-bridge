@@ -214,11 +214,13 @@ ${modeInstruction}
       speak(aiReply);
     } catch (err: any) {
       console.error(err);
-      let errorReply = '我现在遇到一点小问题，我们稍后再联系好吗？';
-      if (err?.message?.includes('API key not valid')) {
-        errorReply = '小花仙现在无法说话，因为部署的网站填写的 API Key 不正确哦。请告诉大人检查一下吧！';
+      let errorReply = '哎呀，小花仙的魔法棒好像出了一点小故障（系统遇到了一点小问题），请稍等一下，我们一会儿再试好吗？✨';
+      if (err?.message?.includes('API key') || err?.message?.includes('Missing') || err?.message?.includes('VITE_')) {
+        errorReply = '呜呜，小花仙的魔法能量不足啦（网站的 API Key 不正确或未配置）。请告诉大人帮忙检查一下设置吧！🧚‍♀️';
       } else if (err?.message?.includes('User location is not supported')) {
-        errorReply = '小花仙现在无法说话，因为当前的地区不支持访问服务哦。请大人检查网络代理哦！';
+        errorReply = '小花仙现在想你却飞不过去（当前地区不支持访问大模型服务）。请大人帮忙检查一下网络魔法（代理配置）哦！🌟';
+      } else if (err?.message?.includes('429') || err?.message?.includes('访问量过大') || err?.message?.includes('Too Many Requests')) {
+        errorReply = '哎呀，现在找小花仙聊天的小朋友太多啦，魔法通讯线路太拥挤了（当前大模型访问量过大）。请等等我，我们稍后一点再聊好吗？🌸';
       }
       setMessages(prev => [...prev, { 
         id: Date.now(), 
