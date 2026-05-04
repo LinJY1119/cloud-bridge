@@ -185,7 +185,12 @@ export default function ChildCall({ onBack }: { onBack?: () => void } = {}) {
         } catch (e) {}
       }
       
-      if (!apiKey || apiKey === 'YOUR_API_KEY') {
+      console.log('--- API Key Debug ---');
+      console.log('Value length:', apiKey ? apiKey.length : 0);
+      console.log('Prefix:', apiKey ? apiKey.substring(0, 5) + '...' : 'empty');
+      console.log('---------------------');
+
+      if (!apiKey || apiKey === 'YOUR_API_KEY' || apiKey === 'undefined') {
         setMessages(prev => [...prev, { 
           id: Date.now(), 
           text: "小花仙现在无法说话，因为网站部署后缺少了有效的 API Key 环境变量哦。", 

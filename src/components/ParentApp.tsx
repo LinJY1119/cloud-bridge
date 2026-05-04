@@ -72,7 +72,12 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
         } catch (e) {}
       }
 
-      if (!apiKey || apiKey === 'YOUR_API_KEY') {
+      console.log('--- API Key Debug ---');
+      console.log('Value length:', apiKey ? apiKey.length : 0);
+      console.log('Prefix:', apiKey ? apiKey.substring(0, 5) + '...' : 'empty');
+      console.log('---------------------');
+
+      if (!apiKey || apiKey === 'YOUR_API_KEY' || apiKey === 'undefined') {
         throw new Error('Missing or invalid Gemini API Key. Please add VITE_GEMINI_API_KEY to your deployment environment variables.');
       }
       const ai = new GoogleGenAI({ apiKey });
