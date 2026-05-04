@@ -173,33 +173,7 @@ export default function ChildCall({ onBack }: { onBack?: () => void } = {}) {
     } 
 
     try {
-      const { GoogleGenAI } = await import("@google/genai");
-      let apiKey = '';
-      try {
-        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      } catch (e) {}
-      if (!apiKey) {
-        try {
-          // @ts-ignore
-          apiKey = process.env.GEMINI_API_KEY;
-        } catch (e) {}
-      }
-      
-      console.log('--- API Key Debug ---');
-      console.log('Value length:', apiKey ? apiKey.length : 0);
-      console.log('Prefix:', apiKey ? apiKey.substring(0, 5) + '...' : 'empty');
-      console.log('---------------------');
-
-      if (!apiKey || apiKey === 'YOUR_API_KEY' || apiKey === 'undefined') {
-        setMessages(prev => [...prev, { 
-          id: Date.now(), 
-          text: "小花仙现在无法说话，因为网站部署后缺少了有效的 API Key 环境变量哦。", 
-          isAi: true 
-        }]);
-        speak("缺少了有效的 API Key 环境变数哦");
-        return;
-      }
-      const ai = new GoogleGenAI({ apiKey });
+      const { generateAIContent } = await import("../lib/ai");
 
       let modeInstruction = "你现在和小朋友处于【闲聊】模式。";
       if (activeTab === "task") {
@@ -225,16 +199,13 @@ ${modeInstruction}
 请用小花仙的语气回答。每句话都要充满童真，可以适当使用一些表情符号（如🌸、✨、🧚‍♀️），回答要简短，不要太长。
 `;
 
-      const response = await ai.models.generateContent({
+      const aiReplyText = await generateAIContent(textToSend, {
+        systemInstruction,
+        temperature: 0.7,
         model: "gemini-2.5-flash",
-        contents: textToSend,
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        }
       });
       
-      const aiReply = response.text || "对不起，我现在有点头晕，不知道该怎么回答呢。能再说一遍吗？";
+      const aiReply = aiReplyText || "对不起，我现在有点头晕，不知道该怎么回答呢。能再说一遍吗？";
       setMessages(prev => [...prev, { 
         id: Date.now(), 
         text: aiReply, 
@@ -244,8 +215,10 @@ ${modeInstruction}
     } catch (err: any) {
       console.error(err);
       let errorReply = '我现在遇到一点小问题，我们稍后再联系好吗？';
-      if (err?.message?.includes('API key not valid') || err?.status === 400 || err?.status === 'INVALID_ARGUMENT') {
-        errorReply = '小花仙现在无法说话，因为部署的网站填写的 API Key 不正确哦。请告诉大人检查一下部署配置的 API Key 吧！';
+      if (err?.message?.includes('API key not valid')) {
+        errorReply = '小花仙现在无法说话，因为部署的网站填写的 API Key 不正确哦。请告诉大人检查一下吧！';
+      } else if (err?.message?.includes('User location is not supported')) {
+        errorReply = '小花仙现在无法说话，因为当前的地区不支持访问服务哦。请大人检查网络代理哦！';
       }
       setMessages(prev => [...prev, { 
         id: Date.now(), 

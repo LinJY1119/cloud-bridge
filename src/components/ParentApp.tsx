@@ -61,38 +61,17 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
     setAiGeneratedOptions(null);
     setShowSuggestions(true);
     try {
-      let apiKey = '';
-      try {
-        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      } catch (e) {}
-      if (!apiKey) {
-        try {
-          // @ts-ignore
-          apiKey = process.env.GEMINI_API_KEY;
-        } catch (e) {}
-      }
+      const { generateAIContent } = await import("../lib/ai");
 
-      console.log('--- API Key Debug ---');
-      console.log('Value length:', apiKey ? apiKey.length : 0);
-      console.log('Prefix:', apiKey ? apiKey.substring(0, 5) + '...' : 'empty');
-      console.log('---------------------');
-
-      if (!apiKey || apiKey === 'YOUR_API_KEY' || apiKey === 'undefined') {
-        throw new Error('Missing or invalid Gemini API Key. Please add VITE_GEMINI_API_KEY to your deployment environment variables.');
-      }
-      const ai = new GoogleGenAI({ apiKey });
-      const historyText = messages.map(m => `${m.isParent ? '家长' : '孩子'}: ${m.text}`).join('\n');
+      const historyText = messages.map((m: any) => `${m.isParent ? '家长' : '孩子'}: ${m.text}`).join('\n');
       const prompt = `你是一个留守儿童的家庭教育助手。请根据以下家长和孩子的聊天记录，为家长生成2条不同角度的回复建议（例如：安慰共情、鼓励引导等，每条50字以内）。\n\n请严格按照以下JSON数组格式返回，不要有其他多余文字：\n[\n  {"title": "安慰共情", "text": "建议内容..."},\n  {"title": "鼓励引导", "text": "建议内容..."}\n]\n\n聊天记录：\n${historyText}`;
       
-      const response = await ai.models.generateContent({
+      const responseText = await generateAIContent(prompt, {
         model: 'gemini-2.0-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        }
+        responseMimeType: "application/json",
       });
       
-      const options = JSON.parse(response.text || '[]');
+      const options = JSON.parse(responseText || '[]');
       setAiGeneratedOptions(options);
     } catch (error) {
       console.error("AI Suggestion Error:", error);
