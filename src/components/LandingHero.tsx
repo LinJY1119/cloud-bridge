@@ -100,7 +100,7 @@ export default function LandingHero({ onEnter, onNavigate }: { onEnter?: () => v
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-5xl sm:text-7xl md:text-8xl max-w-7xl font-normal font-serif text-[#000000] leading-[0.95] tracking-[-2.46px]"
         >
-          跨越<em className="not-italic text-[#6F6F6F]">无声，</em>构筑<em className="not-italic text-[#6F6F6F]">永恒的连结。</em>
+          云桥 · <em className="not-italic text-[#6F6F6F]">让爱不隔千里</em>
         </motion.h1>
          
         {/* Description */}
@@ -110,7 +110,7 @@ export default function LandingHero({ onEnter, onNavigate }: { onEnter?: () => v
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed text-[#6F6F6F]"
         >
-          为孩子们打造温暖的数字避风港，让心灵自由呼吸、自由表达。在这里，每一个情绪都会被聆听，每一份成长都会被见证。
+          为孩子们打造温暖的数字避风港，让心灵自由呼吸、自由表达。在这里，每一个情绪都会被聆听，每一份成长都会被见证，每一次思念，都有落脚的地方，每一次倾听，都让心更近。
         </motion.p>
 
         {/* Hero CTA Button */}

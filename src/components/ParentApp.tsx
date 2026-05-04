@@ -20,7 +20,7 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
   const [actionFeedback, setActionFeedback] = useState<{type: 'water' | 'heart', message: string} | null>(null);
 
   // Use shared diaries or fallback to mock data
-  const diaries = propDiaries || [
+  const diaries = propDiaries && propDiaries.length > 0 ? propDiaries : [
     { dateStr: '2026-04-03', type: '🌹', content: '今天和同学去抓泥鳅，弄得满脸是泥，哈哈哈。' },
     { dateStr: '2026-04-06', type: '🌳', content: '和爷爷学习编竹筐，手被划了一下，但是学到了新本事。' },
     { dateStr: '2026-04-10', type: '🪻', content: '看到别人的爸爸来接他们放学，有点想爸爸了，偷偷哭了一小会儿。' },
@@ -76,8 +76,8 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
     } catch (error) {
       console.error("AI Suggestion Error:", error);
       setAiGeneratedOptions([
-        { title: "安慰共情", text: "宝贝，今天是不是有遇到烦心事呀？妈妈下班了，我们通个电话好不好？" },
-        { title: "鼓励引导", text: "妈妈看到你种出了仙人掌，你能把生气记录下来很棒！周末我们要不要一起玩个线上画画？" }
+        { title: "分享喜悦", text: "宝贝，看到你今天种下了玫瑰花，妈妈真为你开心！周末我们要不要一起去公园玩呢？" },
+        { title: "鼓励探索", text: "妈妈看到你种出了玫瑰，能把开心的事记录下来很棒！下次打电话讲讲这件开心的事好吗？" }
       ]);
     } finally {
       setIsGenerating(false);
@@ -166,7 +166,7 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
                       {/* Upright Tree/Flower */}
                       {diary && (
                         <div 
-                          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                          className="absolute inset-0 flex flex-col items-center justify-end z-20 pointer-events-none pb-2"
                           style={{ 
                             transform: 'rotateZ(45deg) rotateX(-60deg) translateY(-25px) translateZ(20px)', 
                             transformOrigin: 'center bottom',
@@ -352,8 +352,8 @@ export default function ParentApp({ diaries: propDiaries, onAction, messages = [
           </div>
           <p className="text-slate-600 text-sm leading-relaxed font-sans">
             {reportType === 'daily' 
-              ? <>今天小雨种出了 <span className="font-bold text-slate-800 border-b border-indigo-200">1朵仙人掌（生气）</span>，可能在学校遇到了小挫折。建议晚上聊聊。</>
-              : <>本周小雨种出了 <span className="font-bold text-slate-800 border-b border-indigo-200">2朵仙人掌（生气）</span>，情绪波动集中在周三。建议周末多陪伴。</>
+              ? <>近期小雨的情绪非常棒，今天种出了 <span className="font-bold text-slate-800 border-b border-rose-200">1朵玫瑰（开心）</span>，看来在学校遇到了好事情。建议晚上打个电话分享喜悦。</>
+              : <>本周小雨种出了 <span className="font-bold text-slate-800 border-b border-rose-200">2朵玫瑰（开心）</span>，情绪波动比较平稳积极。建议周末继续保持良好的沟通。</>
             }
           </p>
           <button onClick={() => setInGarden(true)} className="mt-4 text-xs font-serif font-bold text-indigo-600 flex items-center gap-1 hover:underline">

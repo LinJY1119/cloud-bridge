@@ -48,7 +48,7 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
     { dateStr: '2026-05-30', type: '🌹', content: '快要过儿童节了，老师说要排练节目，我选上了！' }
   ]);
 
-  const diaries = propDiaries || localDiaries;
+  const diaries = propDiaries && propDiaries.length > 0 ? propDiaries : localDiaries;
   const handleAddDiary = onAddDiary || ((newDiary: any) => setLocalDiaries(prev => [...prev, newDiary]));
 
   const [showParentAction, setShowParentAction] = useState<any>(null);
@@ -513,10 +513,10 @@ export default function ChildGarden({ diaries: propDiaries, onAddDiary, parentAc
                 >
                   <X size={16} />
                 </button>
-                <div className="text-5xl mb-4 animate-bounce">🎁</div>
+                <span className="text-5xl mb-4 animate-bounce block text-center">🎁</span>
                 <h3 className="text-base font-bold text-gray-800 mb-2">魔法盒开启！</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                  AI {MOOD_PLANTS[selectedMood].message}，送你一颗<span className={`font-bold ${MOOD_PLANTS[selectedMood].color}`}>【{MOOD_PLANTS[selectedMood].name}】</span>种子，种下它，{MOOD_PLANTS[selectedMood].desc}
+                  小花仙{MOOD_PLANTS[selectedMood].message}，送你一颗<span className={`font-bold ${MOOD_PLANTS[selectedMood].color}`}>【{MOOD_PLANTS[selectedMood].name}】</span>种子，种下它，{MOOD_PLANTS[selectedMood].desc}
                 </p>
                 <button 
                   onClick={handleAcceptSeed}
