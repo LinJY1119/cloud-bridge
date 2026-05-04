@@ -174,7 +174,27 @@ export default function ChildCall({ onBack }: { onBack?: () => void } = {}) {
 
     try {
       const { GoogleGenAI } = await import("@google/genai");
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      let apiKey = '';
+      try {
+        apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      } catch (e) {}
+      if (!apiKey) {
+        try {
+          // @ts-ignore
+          apiKey = process.env.GEMINI_API_KEY;
+        } catch (e) {}
+      }
+      
+      if (!apiKey || apiKey === 'YOUR_API_KEY') {
+        setMessages(prev => [...prev, { 
+          id: Date.now(), 
+          text: "小花仙现在无法说话，因为网站部署后缺少了有效的 API Key 环境变量哦。", 
+          isAi: true 
+        }]);
+        speak("缺少了有效的 API Key 环境变数哦");
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
 
       let modeInstruction = "你现在和小朋友处于【闲聊】模式。";
       if (activeTab === "task") {
@@ -216,9 +236,12 @@ ${modeInstruction}
         isAi: true 
       }]);
       speak(aiReply);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      const errorReply = err instanceof Error ? err.message : '我现在遇到一点小问题，我们稍后再联系好吗？';
+      let errorReply = '我现在遇到一点小问题，我们稍后再联系好吗？';
+      if (err?.message?.includes('API key not valid') || err?.status === 400 || err?.status === 'INVALID_ARGUMENT') {
+        errorReply = '小花仙现在无法说话，因为部署的网站填写的 API Key 不正确哦。请告诉大人检查一下部署配置的 API Key 吧！';
+      }
       setMessages(prev => [...prev, { 
         id: Date.now(), 
         text: errorReply, 
