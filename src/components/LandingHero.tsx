@@ -78,6 +78,8 @@ export default function LandingHero({ onEnter, onNavigate }: { onEnter?: () => v
           <button onClick={() => onNavigate?.('child-home')} className="text-[#6F6F6F] hover:text-[#000000] transition-colors">学生端</button>
           <button onClick={() => onNavigate?.('parent')} className="text-[#6F6F6F] hover:text-[#000000] transition-colors">家长端</button>
           <button onClick={() => onNavigate?.('teacher')} className="text-[#6F6F6F] hover:text-[#000000] transition-colors">教师端</button>
+          <button onClick={() => onNavigate?.('counselor')} className="text-[#6F6F6F] hover:text-[#000000] transition-colors">咨询师端</button>
+          <button onClick={() => onNavigate?.('volunteer')} className="text-[#6F6F6F] hover:text-[#000000] transition-colors">志愿者端</button>
           <a href="#" className="text-[#6F6F6F] hover:text-[#000000] transition-colors">关于我们</a>
         </div>
         <button 

@@ -5,6 +5,7 @@ import ChildCall from './components/ChildCall';
 import ChildMessage from './components/ChildMessage';
 import ParentApp from './components/ParentApp';
 import TeacherDashboard from './components/TeacherDashboard';
+import ComingSoonView from './components/ComingSoonView';
 import LandingHero from './components/LandingHero';
 import { Monitor, User, Users, Phone, Trash2, AlertTriangle } from 'lucide-react';
 import { db } from './firebase';
@@ -189,11 +190,13 @@ export default function App() {
       case 'child-message': return <ChildMessage onBack={() => setView('child-home')} messages={messages} onSendMessage={handleSendMessage} />;
       case 'parent': return <ParentApp diaries={diaries} onAction={handleParentAction} messages={messages} onSendMessage={handleSendMessage} />;
       case 'teacher': return <TeacherDashboard />;
+      case 'counselor': return <ComingSoonView title="心理咨询师端" />;
+      case 'volunteer': return <ComingSoonView title="志愿者端" />;
       default: return <ChildHome onNavigate={setView} />;
     }
   };
 
-  const isMobileView = view !== 'teacher';
+  const isMobileView = view !== 'teacher' && view !== 'counselor' && view !== 'volunteer';
 
   if (view === 'landing') {
     return <LandingHero onEnter={() => setView('child-home')} onNavigate={setView} />;
@@ -214,6 +217,12 @@ export default function App() {
         </button>
         <button onClick={() => setView('teacher')} className="whitespace-nowrap shrink-0 px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
           教师端
+        </button>
+        <button onClick={() => setView('counselor')} className="whitespace-nowrap shrink-0 px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
+          咨询师端
+        </button>
+        <button onClick={() => setView('volunteer')} className="whitespace-nowrap shrink-0 px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
+          志愿者端
         </button>
         <div className="w-px h-6 bg-gray-300 mx-1 self-center shrink-0"></div>
         <button onClick={() => setShowResetConfirm(true)} className="whitespace-nowrap shrink-0 px-4 py-2 rounded-full text-sm font-medium text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2">
